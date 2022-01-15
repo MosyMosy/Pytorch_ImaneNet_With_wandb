@@ -11,11 +11,12 @@
 #SBATCH --gres=gpu:4
 #SBATCH --ntasks-per-node=32
 #SBATCH --mem=127000M
-#SBATCH --time=2-00:00
+#SBATCH --time=3-00:00
 #SBATCH --account=rrg-ebrahimi
 
 nvidia-smi
 
+module load python/3.7
 source ~/ENV/bin/activate
 
 echo "------------------------------------< Data preparation>----------------------------------"
@@ -82,3 +83,4 @@ echo "--------------------------------------<backup the result>-----------------
 date +"%T"
 cd $SLURM_TMPDIR
 cp -r $SLURM_TMPDIR/Pytorch_ImaneNet_With_wandb/logs/ImageNet/ ~/scratch/Pytorch_ImaneNet_With_wandb/logs/
+cp -r $SLURM_TMPDIR/Pytorch_ImaneNet_With_wandb/wandb/ ~/scratch/Pytorch_ImaneNet_With_wandb/
