@@ -27,14 +27,15 @@ cp -r ~/scratch/Pytorch_ImaneNet_With_wandb .
 echo "Copying the datasets"
 date +"%T"
 cp -r ~/scratch/CD-FSL_Datasets .
-cp ~/scratch/imagenet_object_localization_patched2019.tar.gz .
+cp ~/scratch/dataset/imagenet_object_localization_patched2019.tar.gz .
+cp ~/scratch/dataset/ILSVRC_val.zip .
 
 echo "creating data directories"
 date +"%T"
 cd Pytorch_ImaneNet_With_wandb
 cd data
 tar -xzf $SLURM_TMPDIR/imagenet_object_localization_patched2019.tar.gz
-unzip -q $SLURM_TMPDIR/CD-FSL_Datasets/ILSVRC_val.zip
+unzip -q $SLURM_TMPDIR/ILSVRC_val.zip
 
 mkdir ChestX-Ray8 EuroSAT ISIC2018 plant-disease
 
