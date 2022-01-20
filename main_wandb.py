@@ -45,7 +45,7 @@ parser.add_argument('-j', '--workers', default=1, type=int, metavar='N',
                     help='number of data loading workers (default: 8)')
 parser.add_argument('--epochs', default=3, type=int, metavar='N',
                     help='number of total epochs to run')
-parser.add_argument('--start-epoch', default=8, type=int, metavar='N',
+parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
 parser.add_argument('-b', '--batch-size', default=8, type=int,
                     metavar='N',
@@ -243,7 +243,7 @@ def main_pipeline(config):
             return
 
         # Tell wandb to watch what the model gets up to: gradients, weights, and more!
-        wandb.watch(model, criterion, log="all", log_freq=10)
+        wandb.watch(model, criterion, log="none", log_freq=10)
         for epoch in tqdm(range(config.start_epoch, config.epochs)):
             # if args.distributed:
             #     train_sampler.set_epoch(epoch)
@@ -370,12 +370,12 @@ def validate(val_loader, model, criterion, config):
 
     return top1.avg, progress
 
-def save_checkpoint(state, is_best, dir, filename='checkpoint.pth.tar'):
+def save_checkpoint(state, is_best, dir, filename='checkpoint.pkl'):
     if not os.path.isdir(dir):
         os.makedirs(dir)
     torch.save(state, dir + filename)
     if is_best:
-        shutil.copyfile(dir + filename, dir + 'model_best.pth.tar')
+        shutil.copyfile(dir + filename, dir + 'checkpoint_best.pkl')
 
 class Summary(Enum):
     NONE = 0
