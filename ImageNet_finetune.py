@@ -4,7 +4,7 @@ import random
 import argparse
 import pandas as pd
 from tqdm import tqdm
-from datasets import ISIC_few_shot, EuroSAT_few_shot, CropDisease_few_shot, Chest_few_shot, Chest_color_few_shot, ImageNet_few_shot, miniImageNet_few_shot, tiered_ImageNet_few_shot
+from datasets import ISIC_few_shot, EuroSAT_few_shot, CropDisease_few_shot, Chest_few_shot, ImageNet_few_shot, miniImageNet_few_shot, tiered_ImageNet_few_shot
 
 import numpy as np
 import torch

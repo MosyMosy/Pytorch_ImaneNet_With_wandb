@@ -41,11 +41,11 @@ parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet18',
                     help='model architecture: ' +
                     ' | '.join(model_names) +
                     ' (default: resnet18)')
-parser.add_argument('-j', '--workers', default=8, type=int, metavar='N',
+parser.add_argument('-j', '--workers', default=1, type=int, metavar='N',
                     help='number of data loading workers (default: 8)')
 parser.add_argument('--epochs', default=3, type=int, metavar='N',
                     help='number of total epochs to run')
-parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
+parser.add_argument('--start-epoch', default=8, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
 parser.add_argument('-b', '--batch-size', default=8, type=int,
                     metavar='N',
@@ -250,10 +250,10 @@ def main_pipeline(config):
             adjust_learning_rate(optimizer, epoch, config)
 
             # train for one epoch
-            train(train_loader, model, criterion, optimizer, epoch, config)
+            train_progress = train(train_loader, model, criterion, optimizer, epoch, config)
 
             # evaluate on validation set
-            acc1 = validate(val_loader, model, criterion, config)
+            acc1, val_progress = validate(val_loader, model, criterion, config)
 
             # remember best acc@1 and save checkpoint
             is_best = acc1 > best_acc1
@@ -268,6 +268,16 @@ def main_pipeline(config):
                 'best_acc1': best_acc1,
                 'optimizer' : optimizer.state_dict(),
             }, is_best, config.dir)
+            
+            d = {}
+            for meter in train_progress.meters:
+                d[meter.name] = meter.val
+                d[meter.name + '_avg'] = meter.avg
+            for meter in val_progress.meters:
+                d[meter.name] = meter.val
+                d[meter.name + '_avg'] = meter.avg
+            
+            wandb.log(d, step=epoch)
 
 def train(train_loader, model, criterion, optimizer, epoch, config):
     batch_time = AverageMeter('Time', ':6.3f')
@@ -314,7 +324,8 @@ def train(train_loader, model, criterion, optimizer, epoch, config):
 
         if i % config.print_freq == 0:
             progress.display(i)
-        progress.log_wandb(epoch * len(train_loader) + i)
+        # progress.log_wandb(epoch * len(train_loader) + i)
+        return progress
 
 def validate(val_loader, model, criterion, config):
     batch_time = AverageMeter('val_Time', ':6.3f', Summary.NONE)
@@ -357,7 +368,7 @@ def validate(val_loader, model, criterion, config):
 
         progress.display_summary()
 
-    return top1.avg
+    return top1.avg, progress
 
 def save_checkpoint(state, is_best, dir, filename='checkpoint.pth.tar'):
     if not os.path.isdir(dir):
@@ -421,13 +432,6 @@ class ProgressMeter(object):
         entries = [self.prefix + self.batch_fmtstr.format(batch)]
         entries += [str(meter) for meter in self.meters]
         print('\t'.join(entries))
-        
-    def log_wandb(self, batch):
-        d = {}
-        for meter in self.meters:
-            d[meter.name] = meter.val
-            d[meter.name + '_avg'] = meter.avg
-        wandb.log(d, step=batch)
         
     def display_summary(self):
         entries = [" *"]
