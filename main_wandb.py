@@ -325,7 +325,7 @@ def train(train_loader, model, criterion, optimizer, epoch, config):
         if i % config.print_freq == 0:
             progress.display(i)
         # progress.log_wandb(epoch * len(train_loader) + i)
-        return progress
+    return progress
 
 def validate(val_loader, model, criterion, config):
     batch_time = AverageMeter('val_Time', ':6.3f', Summary.NONE)
