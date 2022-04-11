@@ -128,10 +128,10 @@ def make(config):
     # create model
     if config.pretrained:
         print("=> using pre-trained model '{}'".format(config.arch))
-        model = models.__dict__[config.arch](pretrained=True, norm_layer=TestTimeIN)
+        model = models.__dict__[config.arch](pretrained=True, init_norm_layer=TestTimeIN)
     else:
         print("=> creating model '{}'".format(config.arch))
-        model = models.__dict__[config.arch](norm_layer=TestTimeIN)
+        model = models.__dict__[config.arch](init_norm_layer=TestTimeIN)
 
     if not torch.cuda.is_available():
         print('using CPU, this will be slow')

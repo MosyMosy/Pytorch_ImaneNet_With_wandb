@@ -31,6 +31,7 @@ class TestTimeIN(nn.BatchNorm2d):
             bias = self.bias[None, :, None, None]
             
             target_input = weight * (target_input - target_instance_mean) / (torch.sqrt(target_instance_var + self.eps)) + bias
-                        
+            
+            target_input = torch.clamp(target_input, max=1)            
             return target_input
 

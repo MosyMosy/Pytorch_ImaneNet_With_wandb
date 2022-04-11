@@ -9,7 +9,6 @@ from datasets import ISIC_few_shot, EuroSAT_few_shot, CropDisease_few_shot, Ches
 import numpy as np
 import torch
 import torchvision.models as tv_models
-import models
 
 import torch.nn as nn
 import torch.optim
@@ -84,18 +83,6 @@ def finetune(novel_loader, params, n_shot):
             pretrained_model_template = tv_models.resnet18(norm_layer = TestTimeIN)
         else:
             pretrained_model_template = tv_models.resnet18()        
-        feature_dim = 512
-    elif params.model == 'resnet18_BT':
-        pretrained_model_template = models.resnet18_BT()
-        feature_dim = 512
-    elif params.model == 'resnet18_BIT':
-        pretrained_model_template = models.resnet18_BIT()  
-        feature_dim = 512
-    elif params.model == 'resnet18_BTrans':
-        pretrained_model_template = models.resnet18_BTrans()
-        feature_dim = 512
-    elif params.model == 'resnet18_BITrans':
-        pretrained_model_template = models.resnet18_BITrans()
         feature_dim = 512
     else:
         raise ValueError("Invalid model!")
@@ -311,7 +298,7 @@ if __name__ == '__main__':
                         help='Number of query examples per class')
     parser.add_argument('--train_aug', action='store_true',
                         help='perform data augmentation or not during training ')
-    parser.add_argument('--model', default='resnet18_BTrans',
+    parser.add_argument('--model', default='resnet18',
                         help='backbone architecture')
     parser.add_argument('--freeze_backbone', action='store_true',
                         help='Freeze the backbone network for finetuning')
