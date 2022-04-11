@@ -27,6 +27,8 @@ from tqdm import tqdm
 
 import configs
 
+from TestTimeIN import TestTimeIN
+
 model_names = sorted(name for name in models.__dict__
     if name.islower() and not name.startswith("__")
     and callable(models.__dict__[name]))
@@ -126,10 +128,10 @@ def make(config):
     # create model
     if config.pretrained:
         print("=> using pre-trained model '{}'".format(config.arch))
-        model = models.__dict__[config.arch](pretrained=True)
+        model = models.__dict__[config.arch](pretrained=True, norm_layer=TestTimeIN)
     else:
         print("=> creating model '{}'".format(config.arch))
-        model = models.__dict__[config.arch]()
+        model = models.__dict__[config.arch](norm_layer=TestTimeIN)
 
     if not torch.cuda.is_available():
         print('using CPU, this will be slow')
