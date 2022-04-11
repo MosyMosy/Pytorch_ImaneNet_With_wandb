@@ -167,7 +167,7 @@ def make(config):
     # define loss function (criterion) and optimizer
     criterion = nn.CrossEntropyLoss().cuda(config.gpu)
 
-    optimizer = torch.optim.SGD(model.parameters(), config.lr,
+    optimizer = torch.optim.SGD(model.fc.parameters(), config.lr,
                                 momentum=config.momentum,
                                 weight_decay=config.weight_decay)
 
