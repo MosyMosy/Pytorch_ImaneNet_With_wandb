@@ -54,7 +54,7 @@ parser.add_argument('-b', '--batch-size', default=8, type=int,
                     help='mini-batch size (default: 256), this is the total '
                          'batch size of all GPUs on the current node when '
                          'using Data Parallel or Distributed Data Parallel')
-parser.add_argument('--lr', '--learning-rate', default=0.1, type=float,
+parser.add_argument('--lr', '--learning-rate', default=0.01, type=float,
                     metavar='LR', help='initial learning rate', dest='lr')
 parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
                     help='momentum')
@@ -188,7 +188,7 @@ def make(config):
                 # best_acc1 may be from a checkpoint from a different GPU
                 best_acc1 = best_acc1.to(config.gpu)
             model.load_state_dict(checkpoint['state_dict'])
-            optimizer.load_state_dict(checkpoint['optimizer'])
+            # optimizer.load_state_dict(checkpoint['optimizer'])
             print("=> loaded checkpoint '{}' (epoch {})"
                   .format(config.resume, checkpoint['epoch']))
         else:
@@ -294,7 +294,7 @@ def train(train_loader, model, criterion, optimizer, epoch, config):
         prefix="Epoch: [{}]".format(epoch))
 
     # switch to train mode
-    model.train()
+    model.fc.train()
 
     end = time.time()
     for i, (images, target) in enumerate(train_loader):
@@ -447,8 +447,8 @@ class ProgressMeter(object):
         return '[' + fmt + '/' + fmt.format(num_batches) + ']'
 
 def adjust_learning_rate(optimizer, epoch, args):
-    """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    lr = args.lr * (0.1 ** (epoch // 30))
+    """Sets the learning rate to the initial LR decayed by 10 every 3 epochs"""
+    lr = args.lr * (0.1 ** (epoch // 3))
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
