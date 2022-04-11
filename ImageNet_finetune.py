@@ -18,6 +18,7 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
+from TestTimeIN import TestTimeIN
 
 class Classifier(nn.Module):
     def __init__(self, dim, n_way):
@@ -79,7 +80,10 @@ def finetune(novel_loader, params, n_shot):
         raise ValueError("Invalid load path version!")
 
     if params.model == 'resnet18':
-        pretrained_model_template = tv_models.resnet18()        
+        if params.norm_layer == 'TTIN':
+            pretrained_model_template = tv_models.resnet18(norm_layer = TestTimeIN)
+        else:
+            pretrained_model_template = tv_models.resnet18()        
         feature_dim = 512
     elif params.model == 'resnet18_BT':
         pretrained_model_template = models.resnet18_BT()
@@ -318,6 +322,7 @@ if __name__ == '__main__':
                         help='how to load the embedding')
     parser.add_argument('--save_suffix', type=str,
                         help='suffix added to the csv file')
-
+    parser.add_argument('--norm_layer', type=str, default= 'BN',
+                        help='Normalization layer BN, TTIN (TestTimeIN)')
     params = parser.parse_args()
     main(params)
