@@ -367,7 +367,7 @@ def validate(val_loader, model, criterion, config):
             # progress.log_wandb(i)
 
         progress.display_summary()
-
+    print(top1.avg)
     return top1.avg, progress
 
 def save_checkpoint(state, is_best, dir, filename='checkpoint.pkl'):
