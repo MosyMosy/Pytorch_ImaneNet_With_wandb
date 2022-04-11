@@ -180,6 +180,7 @@ def make(config):
                 loc = 'cuda:{}'.format(config.gpu)
                 checkpoint = torch.load(config.resume, map_location=loc)
             config.start_epoch = checkpoint['epoch']
+            config.update(allow_val_change=True)
             best_acc1 = checkpoint['best_acc1']
             if config.gpu is not None:
                 # best_acc1 may be from a checkpoint from a different GPU
