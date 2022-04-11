@@ -167,7 +167,7 @@ def make(config):
     # define loss function (criterion) and optimizer
     criterion = nn.CrossEntropyLoss().cuda(config.gpu)
 
-    optimizer = torch.optim.SGD(model.fc.parameters(), config.lr,
+    optimizer = torch.optim.SGD(model.parameters(), config.lr,
                                 momentum=config.momentum,
                                 weight_decay=config.weight_decay)
 
@@ -294,7 +294,7 @@ def train(train_loader, model, criterion, optimizer, epoch, config):
         prefix="Epoch: [{}]".format(epoch))
 
     # switch to train mode
-    model.fc.train()
+    model.train()
 
     end = time.time()
     for i, (images, target) in enumerate(train_loader):
