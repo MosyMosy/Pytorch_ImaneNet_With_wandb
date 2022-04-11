@@ -230,7 +230,7 @@ def make(config):
     return model,criterion,optimizer,train_loader,val_loader
 
 def main_pipeline(config):
-    with wandb.init(project="ImageNet", config=config):
+    with wandb.init(project="ImageNet", allow_val_change=True, config=config):
         config = wandb.config
         
         global best_acc1
