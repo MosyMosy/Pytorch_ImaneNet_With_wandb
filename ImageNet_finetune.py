@@ -17,7 +17,8 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
-from TestTimeIN import TestTimeIN
+from models import resnet18 as resnet18_plus
+
 
 class Classifier(nn.Module):
     def __init__(self, dim, n_way):
@@ -78,11 +79,11 @@ def finetune(novel_loader, params, n_shot):
     else:
         raise ValueError("Invalid load path version!")
 
-    if params.model == 'resnet18':
-        if params.norm_layer == 'TTIN':
-            pretrained_model_template = tv_models.resnet18(norm_layer = TestTimeIN)
-        else:
-            pretrained_model_template = tv_models.resnet18()        
+    if params.model == 'resnet18':        
+        pretrained_model_template = tv_models.resnet18()        
+        feature_dim = 512
+    elif params.model == 'resnet18_plus':        
+        pretrained_model_template = resnet18_plus()        
         feature_dim = 512
     else:
         raise ValueError("Invalid model!")
